@@ -775,13 +775,18 @@ Object.keys(SVGS).forEach(k => {
   const svg = el.querySelector('svg');
   if (svg) {
     svg.removeAttribute('width');
+    svg.removeAttribute('height');
     svg.style.width = '100%';
-    svg.style.height = 'auto';
+    svg.style.height = k === 'main' ? 'calc(100vh - 90px)' : 'auto';
     svg.style.overflow = 'visible';
-    // Remove any white background on root svg
     svg.style.background = 'transparent';
+    // For the main panel, preserve aspect ratio but fill height
+    if (k === 'main') {
+      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    }
   }
 });
+
 
 // ── Fix node rect fills directly via DOM (beats !important inline styles) ──
 function fixNodeColors(svgEl) {
