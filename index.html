@@ -9,13 +9,13 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #f5f6f8;
+    background: #0d1117;
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
     padding: 2rem;
+    color: #e6edf3;
   }
 
-  /* Title + back row */
   .top-bar {
     display: flex;
     align-items: center;
@@ -27,97 +27,132 @@
     display: none;
     align-items: center;
     gap: 5px;
-    padding: 5px 12px;
-    border: 1px solid #d1d5db;
+    padding: 5px 14px;
+    border: 1px solid #30363d;
     border-radius: 6px;
-    background: #fff;
+    background: #161b22;
     font-family: 'Inter', sans-serif;
     font-size: 0.78rem;
-    color: #374151;
+    color: #8b949e;
     cursor: pointer;
     transition: border-color 0.15s, color 0.15s;
   }
-
-  .back-btn:hover { border-color: #2563eb; color: #2563eb; }
+  .back-btn:hover { border-color: #58a6ff; color: #58a6ff; }
   .back-btn.visible { display: flex; }
 
   .graph-title {
     font-size: 1rem;
     font-weight: 600;
-    color: #111827;
+    color: #e6edf3;
   }
-
   .graph-sub {
     font-size: 0.75rem;
-    color: #9ca3af;
-    margin-top: 2px;
+    color: #484f58;
+    margin-top: 3px;
   }
 
-  /* Graph card */
   .graph-card {
-    background: #fff;
-    border: 1px solid #e5e7eb;
+    background: #161b22;
+    border: 1px solid #21262d;
     border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 2rem;
+    overflow: hidden;
   }
 
   .svg-panel { display: block; }
   .svg-panel.hidden { display: none; }
-
-  .svg-panel.entering {
-    animation: fadeIn 0.25s ease both;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
+  .svg-panel.entering { animation: fadeUp 0.3s ease both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+  .svg-panel svg { width: 100%; height: auto; display: block; }
 
+  /* ── Dark-mode overrides for the embedded SVG ── */
+  .svg-panel svg #export-svg,
   .svg-panel svg {
-    width: 100%;
-    height: auto;
-    display: block;
+    fill: #e6edf3 !important;
   }
 
-  /* Tooltip */
+  /* Node shapes: dark fill, colored border */
+  .svg-panel svg .node rect,
+  .svg-panel svg .node polygon,
+  .svg-panel svg .node circle,
+  .svg-panel svg .node ellipse,
+  .svg-panel svg .node path {
+    fill: #1c2333 !important;
+    stroke: #3a4a6b !important;
+  }
+
+  /* Node text */
+  .svg-panel svg .label,
+  .svg-panel svg .nodeLabel,
+  .svg-panel svg .label text,
+  .svg-panel svg span,
+  .svg-panel svg p,
+  .svg-panel svg text {
+    fill: #e6edf3 !important;
+    color: #e6edf3 !important;
+  }
+
+  /* Edges / arrows */
+  .svg-panel svg .edgePath .path,
+  .svg-panel svg path.arrowhead,
+  .svg-panel svg .flowchart-link {
+    stroke: #3a4a6b !important;
+  }
+  .svg-panel svg .marker {
+    fill: #3a4a6b !important;
+    stroke: #3a4a6b !important;
+  }
+
+  /* Clickable node highlight (added via JS class) */
+  .svg-panel svg .fv-click rect,
+  .svg-panel svg .fv-click polygon {
+    stroke: #58a6ff !important;
+    stroke-width: 2px !important;
+  }
+  .svg-panel svg .fv-click:hover rect,
+  .svg-panel svg .fv-click:hover polygon {
+    fill: #1a2744 !important;
+    stroke: #79c0ff !important;
+  }
+  .svg-panel svg .fv-click { cursor: pointer; }
+
+  /* ── Tooltip ── */
   .tooltip {
     position: fixed;
     z-index: 999;
-    background: #fff;
-    border: 1px solid #e5e7eb;
+    background: #1c2333;
+    border: 1px solid #30363d;
     border-radius: 8px;
-    padding: 10px 13px;
+    padding: 10px 14px;
     max-width: 230px;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.15s;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
   }
-
   .tooltip.show { opacity: 1; }
-
   .tt-title {
     font-size: 0.8rem;
     font-weight: 600;
-    color: #111827;
+    color: #e6edf3;
     margin-bottom: 4px;
   }
-
   .tt-desc {
     font-size: 0.72rem;
-    color: #6b7280;
-    line-height: 1.5;
+    color: #8b949e;
+    line-height: 1.55;
   }
-
   .tt-cta {
     display: inline-block;
     margin-top: 7px;
     font-size: 0.68rem;
     font-weight: 500;
-    color: #2563eb;
-    background: #eff6ff;
-    padding: 2px 7px;
+    color: #58a6ff;
+    background: rgba(88,166,255,0.1);
+    padding: 2px 8px;
     border-radius: 4px;
   }
 </style>
@@ -126,7 +161,7 @@
 
 <div class="tooltip" id="tooltip">
   <div class="tt-title" id="ttTitle"></div>
-  <div class="tt-desc" id="ttDesc"></div>
+  <div class="tt-desc"  id="ttDesc"></div>
   <div id="ttCta"></div>
 </div>
 
@@ -134,7 +169,7 @@
   <button class="back-btn" id="backBtn" onclick="goBack()">← Back</button>
   <div>
     <div class="graph-title" id="gTitle">Main Agent Flow</div>
-    <div class="graph-sub" id="gSub">Hover nodes to inspect · Click blue-outlined nodes to drill in</div>
+    <div class="graph-sub"   id="gSub">Hover nodes to inspect · Click blue-outlined nodes to drill in</div>
   </div>
 </div>
 
@@ -669,44 +704,49 @@ const META = {
 };
 
 const NODE_INFO = {
-  '__start__':                     { title: 'Start',                       desc: 'Entry point. Receives the user request and initializes the pipeline.' },
-  'authenticate_request':          { title: 'Authenticate Request',        desc: 'Validates user credentials and permissions before processing.' },
-  'intent_detection':              { title: 'Intent Detection',            desc: 'Classifies the query: Database, General Info, Greeting, Logs, or Metrics.' },
-  'database_request':              { title: 'Database Request',            desc: 'Routes to the SQL insight pipeline.', drill: 'sql' },
-  'general_information_request':   { title: 'General Information',         desc: 'Routes to the knowledge retrieval pipeline. May trigger a web search.', drill: 'general' },
-  'greeting_request':              { title: 'Greeting Request',            desc: 'Handles conversational greetings without backend processing.' },
-  'logs_request':                  { title: 'Logs Request',               desc: 'Routes to the log analysis pipeline.', drill: 'web_search' },
-  'metrices_request':              { title: 'Metrics Request',            desc: 'Routes to the performance metrics pipeline.', drill: 'metrices' },
-  'format_response':               { title: 'Format Response',            desc: 'Standardizes output from all agents into a consistent response.' },
-  '__end__':                       { title: 'End',                        desc: 'Terminal node. Processed response returned to the user.' },
-  'Resolve Data Range':            { title: 'Resolve Data Range',         desc: 'Resolves date ranges and time windows for the query.' },
-  'Validate Entities':             { title: 'Validate Entities',          desc: 'Validates tables, columns, and metrics against the schema.' },
-  'Fetch Table Schema':            { title: 'Fetch Table Schema',         desc: 'Retrieves database schema metadata for SQL generation.' },
-  'Generate SQL':                  { title: 'Generate SQL',               desc: 'AI-powered SQL generation from natural language.' },
-  'Validate SQL':                  { title: 'Validate SQL',               desc: 'Syntax and semantic validation before execution.' },
-  'Execute Query':                 { title: 'Execute Query',              desc: 'Runs validated SQL against the database.' },
-  'Post Query Operations':         { title: 'Post Query Operations',      desc: 'Applies transformations and enrichment to raw results.' },
-  'Generate Business Insight':     { title: 'Generate Business Insight',  desc: 'AI analysis to extract meaningful conclusions from results.' },
-  'Format Insight Response':       { title: 'Format Insight Response',    desc: 'Packages insights with natural language summary.' },
-  'Check if Web Search is Required':{ title: 'Web Search Decision',       desc: 'Decides if live web data is needed or internal knowledge suffices.' },
-  'Perform DuckDuckGo Search':     { title: 'DuckDuckGo Search',         desc: 'Privacy-preserving web search for current information.' },
-  'Answer User Query':             { title: 'Answer Query',               desc: 'Synthesizes knowledge or search results into an answer.' },
-  'parse_logs_query':              { title: 'Parse Logs Query',           desc: 'Extracts filters, time ranges, and severity from the query.' },
-  'fetch_logs':                    { title: 'Fetch Logs',                 desc: 'Retrieves raw log entries from the logging backend.' },
-  'analyze_logs':                  { title: 'Analyze Logs',               desc: 'Pattern recognition and anomaly detection across logs.' },
-  'format_logs_response':          { title: 'Format Logs Response',       desc: 'Structures results with key findings and summaries.' },
-  'parse_metrics_query':           { title: 'Parse Metrics Query',        desc: 'Identifies metric names, dimensions, and time ranges.' },
-  'fetch_metrics':                 { title: 'Fetch Metrics',              desc: 'Retrieves time-series data from the metrics store.' },
-  'analyze_metrics':               { title: 'Analyze Metrics',           desc: 'Trend detection, anomaly identification, percentile computation.' },
-  'format_metrics_response':       { title: 'Format Metrics Response',    desc: 'Presents metrics with thresholds and natural language summaries.' }
+  '__start__':                      { title: 'Start',                       desc: 'Entry point. Receives the user request and initializes the pipeline.' },
+  'authenticate_request':           { title: 'Authenticate Request',        desc: 'Validates user credentials and permissions before processing.' },
+  'intent_detection':               { title: 'Intent Detection',            desc: 'Classifies the query: Database, General Info, Greeting, Logs, or Metrics.' },
+  'database_request':               { title: 'Database Request',            desc: 'Routes to the SQL insight pipeline.', drill: 'sql' },
+  'general_information_request':    { title: 'General Information',         desc: 'Routes to the knowledge retrieval pipeline. May trigger a web search.', drill: 'general' },
+  'greeting_request':               { title: 'Greeting Request',            desc: 'Handles conversational greetings without backend processing.' },
+  'logs_request':                   { title: 'Logs Request',                desc: 'Routes to the log analysis pipeline.', drill: 'web_search' },
+  'metrices_request':               { title: 'Metrics Request',             desc: 'Routes to the performance metrics pipeline.', drill: 'metrices' },
+  'format_response':                { title: 'Format Response',             desc: 'Standardizes output from all agents into a consistent response.' },
+  '__end__':                        { title: 'End',                         desc: 'Terminal node. Processed response returned to the user.' },
+  'Resolve Data Range':             { title: 'Resolve Data Range',          desc: 'Resolves date ranges and time windows for the query.' },
+  'Validate Entities':              { title: 'Validate Entities',           desc: 'Validates tables, columns, and metrics against the schema.' },
+  'Fetch Table Schema':             { title: 'Fetch Table Schema',          desc: 'Retrieves database schema metadata for SQL generation.' },
+  'Generate SQL':                   { title: 'Generate SQL',                desc: 'AI-powered SQL generation from natural language.' },
+  'Validate SQL':                   { title: 'Validate SQL',                desc: 'Syntax and semantic validation before execution.' },
+  'Execute Query':                  { title: 'Execute Query',               desc: 'Runs validated SQL against the database.' },
+  'Post Query Operations':          { title: 'Post Query Operations',       desc: 'Applies transformations and enrichment to raw results.' },
+  'Generate Business Insight':      { title: 'Generate Business Insight',   desc: 'AI analysis to extract meaningful conclusions from results.' },
+  'Format Insight Response':        { title: 'Format Insight Response',     desc: 'Packages insights with natural language summary.' },
+  'Check if Web Search is Required':{ title: 'Web Search Decision',         desc: 'Decides if live web data is needed or internal knowledge suffices.' },
+  'Perform DuckDuckGo Search':      { title: 'DuckDuckGo Search',           desc: 'Privacy-preserving web search for current information.' },
+  'Answer User Query':              { title: 'Answer Query',                desc: 'Synthesizes knowledge or search results into an answer.' },
+  'parse_logs_query':               { title: 'Parse Logs Query',            desc: 'Extracts filters, time ranges, and severity from the query.' },
+  'fetch_logs':                     { title: 'Fetch Logs',                  desc: 'Retrieves raw log entries from the logging backend.' },
+  'analyze_logs':                   { title: 'Analyze Logs',                desc: 'Pattern recognition and anomaly detection across logs.' },
+  'format_logs_response':           { title: 'Format Logs Response',        desc: 'Structures results with key findings and summaries.' },
+  'parse_metrics_query':            { title: 'Parse Metrics Query',         desc: 'Identifies metric names, dimensions, and time ranges.' },
+  'fetch_metrics':                  { title: 'Fetch Metrics',               desc: 'Retrieves time-series data from the metrics store.' },
+  'analyze_metrics':                { title: 'Analyze Metrics',             desc: 'Trend detection, anomaly identification, percentile computation.' },
+  'format_metrics_response':        { title: 'Format Metrics Response',     desc: 'Presents metrics with thresholds and natural language summaries.' }
 };
 
-const DRILLDOWN = { database_request:'sql', general_information_request:'general', logs_request:'web_search', metrices_request:'metrices' };
+const DRILLDOWN = {
+  database_request: 'sql',
+  general_information_request: 'general',
+  logs_request: 'web_search',
+  metrices_request: 'metrices'
+};
 
 let current = 'main';
 const history = ['main'];
 
-// Inject SVGs
+// ── Inject SVGs ──
 Object.keys(SVGS).forEach(k => {
   const el = document.getElementById('panel-' + k);
   if (!el) return;
@@ -715,20 +755,66 @@ Object.keys(SVGS).forEach(k => {
   if (svg) { svg.removeAttribute('width'); svg.style.width = '100%'; svg.style.height = 'auto'; }
 });
 
-// Make interactive
+// ── Animate edges: make them flow with dashes ──
+function animateEdges(svgEl) {
+  const paths = svgEl.querySelectorAll('.edgePath .path, .flowchart-link');
+  paths.forEach((path, i) => {
+    const len = path.getTotalLength ? path.getTotalLength() : 200;
+    path.style.strokeDasharray = `$<built-in function len>`;
+    path.style.strokeDashoffset = `$<built-in function len>`;
+    path.style.transition = `stroke-dashoffset 0.8s ease ${i * 0.06}s`;
+    // trigger reflow then animate in
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        path.style.strokeDashoffset = '0';
+      });
+    });
+  });
+
+  // After draw-in, switch to flowing dashes on edges
+  const edgeDelay = (paths.length * 60) + 900;
+  setTimeout(() => {
+    paths.forEach(path => {
+      path.style.transition = 'none';
+      path.style.strokeDasharray = '8 5';
+      path.style.strokeDashoffset = '';
+      path.style.animation = `flowDash ${1.8 + Math.random() * 0.8}s linear infinite`;
+    });
+  }, edgeDelay);
+}
+
+// Inject keyframe into document once
+const kf = document.createElement('style');
+kf.textContent = `
+  @keyframes flowDash {
+    from { stroke-dashoffset: 26; }
+    to   { stroke-dashoffset: 0; }
+  }
+  @keyframes nodeAppear {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+`;
+document.head.appendChild(kf);
+
+// ── Animate nodes appearing ──
+function animateNodes(svgEl) {
+  const nodes = svgEl.querySelectorAll('.node');
+  nodes.forEach((n, i) => {
+    n.style.opacity = '0';
+    n.style.animation = `nodeAppear 0.35s ease ${i * 0.07}s both`;
+  });
+}
+
+// ── Make nodes interactive ──
 function makeInteractive(key) {
   const panel = document.getElementById('panel-' + key);
   const svg = panel && panel.querySelector('svg');
   if (!svg || svg.dataset.ready) return;
   svg.dataset.ready = '1';
 
-  // Inject style for clickable nodes
-  const s = document.createElementNS('http://www.w3.org/2000/svg', 'style');
-  s.textContent = `
-    .fv-click rect, .fv-click polygon { stroke: #2563eb !important; stroke-width: 2 !important; cursor: pointer; }
-    .fv-click:hover rect, .fv-click:hover polygon { fill: #eff6ff !important; }
-  `;
-  svg.insertBefore(s, svg.firstChild);
+  animateNodes(svg);
+  animateEdges(svg);
 
   svg.querySelectorAll('g[id]').forEach(g => {
     const rawId = g.id.replace(/^flowchart-/, '').replace(/-\d+$/, '');
@@ -747,7 +833,7 @@ function makeInteractive(key) {
   });
 }
 
-// Tooltip
+// ── Tooltip ──
 const tip = document.getElementById('tooltip');
 function showTip(e, title, desc, hasDrill) {
   document.getElementById('ttTitle').textContent = title;
@@ -763,14 +849,14 @@ function moveTip(e) {
 }
 function hideTip() { tip.classList.remove('show'); }
 
-// Navigate
+// ── Navigate ──
 function go(key) {
   if (key === current) return;
   document.getElementById('panel-' + current).classList.add('hidden');
   const nxt = document.getElementById('panel-' + key);
   nxt.classList.remove('hidden');
   nxt.classList.add('entering');
-  setTimeout(() => nxt.classList.remove('entering'), 300);
+  setTimeout(() => nxt.classList.remove('entering'), 350);
   current = key;
   history.push(key);
   updateUI();
@@ -785,7 +871,7 @@ function goBack() {
   const p = document.getElementById('panel-' + prev);
   p.classList.remove('hidden');
   p.classList.add('entering');
-  setTimeout(() => p.classList.remove('entering'), 300);
+  setTimeout(() => p.classList.remove('entering'), 350);
   current = prev;
   updateUI();
 }
