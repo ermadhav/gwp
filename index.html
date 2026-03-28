@@ -211,7 +211,7 @@
 </div>
 
 <div class="graph-wrap">
-  <div class="svg-panel entering" id="panel-main"></div>
+  <div class="svg-panel main-panel entering" id="panel-main"></div>
   <div class="svg-panel hidden"   id="panel-sql"></div>
   <div class="svg-panel hidden"   id="panel-general"></div>
   <div class="svg-panel hidden"   id="panel-web_search"></div>
@@ -793,12 +793,17 @@ Object.keys(SVGS).forEach(k => {
     svg.removeAttribute('width');
     svg.removeAttribute('height');
     svg.style.width = '100%';
-    svg.style.height = k === 'main' ? 'calc(100vh - 90px)' : 'auto';
     svg.style.overflow = 'visible';
     svg.style.background = 'transparent';
-    // For the main panel, preserve aspect ratio but fill height
     if (k === 'main') {
+      // Main graph: fills the full available height, centered
+      svg.style.height = 'calc(100vh - 90px)';
       svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      el.classList.add('main-panel');
+    } else {
+      // Sub-flow graphs: natural height, scrollable via parent
+      svg.style.height = 'auto';
+      svg.style.paddingBottom = '2rem';
     }
   }
 });
@@ -944,6 +949,8 @@ function go(key) {
   setTimeout(() => nxt.classList.remove('entering'), 350);
   current = key;
   flowHistory.push(key);
+  // Reset scroll to top on navigation
+  document.querySelector('.graph-wrap').scrollTop = 0;
   updateUI();
   makeInteractive(key);
 }
@@ -958,6 +965,8 @@ function goBack() {
   p.classList.add('entering');
   setTimeout(() => p.classList.remove('entering'), 350);
   current = prev;
+  // Reset scroll to top on back navigation
+  document.querySelector('.graph-wrap').scrollTop = 0;
   updateUI();
 }
 
