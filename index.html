@@ -11,9 +11,12 @@
   body {
     background: #0d1117;
     font-family: 'Inter', sans-serif;
-    min-height: 100vh;
+    height: 100vh;
     padding: 2rem;
     color: #c9d8f0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .top-bar {
@@ -56,9 +59,11 @@
     display: flex;
     justify-content: center;
     width: 100%;
+    flex: 1;
+    min-height: 0;
   }
 
-  .svg-panel { display: block; }
+  .svg-panel { display: flex; width: 100%; align-items: flex-start; }
   .svg-panel.hidden { display: none; }
   .svg-panel.entering { animation: fadeUp 0.3s ease both; }
   @keyframes fadeUp {
@@ -67,7 +72,7 @@
   }
   .svg-panel svg {
     margin: 0 auto;
-    max-width: 1040px;
+    max-width: 100%;
     width: 100%;
     height: auto;
     display: block;
